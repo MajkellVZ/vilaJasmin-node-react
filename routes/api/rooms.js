@@ -4,14 +4,13 @@ const auth = require('../../middleware/auth');
 const {check, validationResult} = require('express-validator/check');
 
 const Rooms =  require('../../models/Rooms');
-const RoomTypes = require('../../models/RoomTypes');
 
 // @route GET api/rooms
 // @desc Show all rooms
 // @access Public
 router.get('/', async (req, res) => {
     try {
-        const rooms = await Rooms.find();
+        const rooms = await Rooms.find().populate('room_types');
         await res.json(rooms);
     } catch (e) {
         console.error(e.message);
@@ -25,7 +24,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const {id} = req.params;
-        const room = await Rooms.findById(id);
+        const room = await Rooms.findById(id).populate('room_types');
         if (!room){
             return res.status(400).json({msg: 'Room not found.'});
         }
@@ -44,7 +43,8 @@ router.get('/:id', async (req, res) => {
 // @desc Create room
 // @access Private
 router.post('/', [auth, [
-    check('room_number', 'Room Number required').not().isEmpty()
+    check('room_number', 'Room Number required').not().isEmpty(),
+    check('room_types', 'Room Type required').not().isEmpty()
 ]], async (req, res) => {
     const errors = validationResult(req);
 
@@ -52,14 +52,15 @@ router.post('/', [auth, [
         return res.status(400).json({errors: errors.array()});
     }
 
-    const {room_number} = req.body;
+    const {room_number, room_types} = req.body;
 
     const roomFields = {};
     roomFields.room_number = room_number;
+    roomFields.room_types = room_types;
 
     try {
         //Create
-        let room = new RoomTypes(roomFields);
+        let room = new Rooms(roomFields);
         await room.save();
         await res.json(room);
 
@@ -91,7 +92,7 @@ router.put('/:id', [auth, [
         const {id} = req.params;
         let room = await Rooms.findById(id);
         if (room){
-            room = await RoomTypes.findByIdAndUpdate(
+            room = await Rooms.findByIdAndUpdate(
                 {_id: id},
                 {$set: roomFields}
             );
