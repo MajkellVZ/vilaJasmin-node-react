@@ -17,6 +17,7 @@ app.use('/api/rooms', require('./routes/api/rooms'));
 app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/user', require('./routes/api/user'));
 app.use('/api/bookings', require('./routes/api/bookings'));
+app.use('/api/filter', require('./routes/api/filter'));
 
 const PORT = process.env.PORT || 5000;
 
