@@ -2,21 +2,21 @@ import axios from 'axios';
 import {setAlert} from "./alert";
 
 import {
-    GET_ROOM_TYPES, ROOM_TYPE_ERROR
+    GET_BOOKINGS, BOOKINGS_ERROR
 } from "./types";
 
-// Get room types
-export const getRoomTypes = () => async dispatch => {
+// Get bookings
+export const getBookings = () => async dispatch => {
     try {
-        const res = await axios.get(`/api/room/types/`);
+        const res = await axios.get(`/api/bookings/`);
 
         dispatch({
-            type: GET_ROOM_TYPES,
+            type: GET_BOOKINGS,
             payload: res.data
         });
     } catch (e) {
         dispatch({
-            type: ROOM_TYPE_ERROR,
+            type: BOOKINGS_ERROR,
             payload: {msg: e.response.statusText, status: e.response.status}
         });
     }

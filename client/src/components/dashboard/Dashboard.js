@@ -1,29 +1,23 @@
-import React, {useEffect} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {getRoomType} from "../../actions/room_types";
+import Spinner from "../layout/Spinner";
+import Sidebar from "../layout/Sidebar";
 
-const Dashboard = ({getRoomType, auth, room_type}) => {
-    useEffect(() => {
-        getRoomType()
-    }, []);
+const Dashboard = ({getRoomTypes, getBookings, auth: {user, loading}}) => {
 
-    return (
-        <div>
-            <h1>Dashboard</h1>
-        </div>
-    )
+    return loading && user === null ? <Spinner/> : <Fragment>
+        <h1>Hello {user && user.name}</h1>
+        <Sidebar/>
+    </Fragment>
 };
 
 Dashboard.propTypes = {
-    getRoomType: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
-    room_type: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
     auth: state.auth,
-    room_type: state.room_type
 });
 
-export default connect(mapStateToProps, {getRoomType})(Dashboard);
+export default connect(mapStateToProps)(Dashboard);

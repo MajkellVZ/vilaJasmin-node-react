@@ -1,8 +1,8 @@
-import {GET_ROOM_TYPES, ROOM_TYPE_ERROR} from "../actions/types";
+import {GET_BOOKINGS, BOOKINGS_ERROR} from "../actions/types";
 
 const initialState = {
-    room_type: null,
-    room_types: [],
+    booking: null,
+    bookings: [],
     loading: true,
     error: {}
 };
@@ -12,13 +12,13 @@ export default function (state = initialState, action) {
 
 
     switch (type) {
-        case GET_ROOM_TYPES:
+        case GET_BOOKINGS:
             return {
                 ...state,
-                room_types: payload,
+                bookings: payload,
                 loading: false
             };
-        case ROOM_TYPE_ERROR:
+        case BOOKINGS_ERROR:
             return {
                 ...state,
                 error: payload,
