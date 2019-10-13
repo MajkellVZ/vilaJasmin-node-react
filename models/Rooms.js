@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const RoomsSchema = new mongoose.Schema({
     room_number: {
         type: Number,
-        required: true
+        required: true,
+        unique: true
     },
     room_types: {
         type: mongoose.Schema.Types.ObjectID,

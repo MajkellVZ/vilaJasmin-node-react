@@ -3,15 +3,35 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const {check, validationResult} = require('express-validator/check');
 
-const Rooms =  require('../../models/Rooms');
+const Rooms = require('../../models/Rooms');
 
 // @route GET api/rooms
 // @desc Show all rooms
 // @access Public
 router.get('/', async (req, res) => {
     try {
-        const rooms = await Rooms.find().populate('room_types');
-        await res.json(rooms);
+        const page = parseInt(req.query.page) || 0;
+        const limit = 10;
+        const rooms = await Rooms.find()
+            .skip(page * limit)
+            .limit(limit)
+            .populate('room_types')
+            .exec((err, doc) => {
+                if (err) {
+                    return res.json(err);
+                }
+                Rooms.countDocuments().exec((count_err, count) => {
+                    if (err) {
+                        return res.json(count_err);
+                    }
+                    return res.json({
+                        total: count,
+                        page: page,
+                        page_size: doc.length,
+                        rooms: doc
+                    })
+                })
+            });
     } catch (e) {
         console.error(e.message);
         res.status(500).send('server error');
@@ -25,13 +45,13 @@ router.get('/:id', async (req, res) => {
     try {
         const {id} = req.params;
         const room = await Rooms.findById(id).populate('room_types');
-        if (!room){
+        if (!room) {
             return res.status(400).json({msg: 'Room not found.'});
         }
         await res.json(room);
     } catch (e) {
         console.error(e.message);
-        if (e.kind === 'ObjectId'){
+        if (e.kind === 'ObjectId') {
             return res.status(400).json({msg: 'Room not found.'});
         }
         res.status(500).send('server error');
@@ -53,6 +73,11 @@ router.post('/', [auth, [
     }
 
     const {room_number, room_types} = req.body;
+
+    let room = await Rooms.findOne({room_number});
+    if (room) {
+        return res.status(400).json({errors: [{msg: 'Room already exists.'}]});
+    }
 
     const roomFields = {};
     roomFields.room_number = room_number;
@@ -91,7 +116,7 @@ router.put('/:id', [auth, [
         //Update
         const {id} = req.params;
         let room = await Rooms.findById(id);
-        if (room){
+        if (room) {
             room = await Rooms.findByIdAndUpdate(
                 {_id: id},
                 {$set: roomFields}

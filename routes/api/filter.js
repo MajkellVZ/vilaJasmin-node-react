@@ -14,6 +14,7 @@ router.get('/room/count', async (req, res) => {
     Rooms.countDocuments({room_types: room_types}, (err, count) => {
         res.json(count);
     });
+    // const roomCount = await Rooms.countDocuments({room_types: room_types});
 });
 
 // @route GET api/filter/room/occupied/count

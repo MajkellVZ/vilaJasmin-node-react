@@ -9,6 +9,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import Bookings from "./components/view/Bookings";
 import RoomTypes from "./components/view/RoomTypes";
 import PrivateRoute from "./components/routing/PrivateRoute";
+import Rooms from "./components/view/Rooms";
 //Redux
 import {Provider} from 'react-redux';
 import store from "./store";
@@ -32,16 +33,18 @@ const App = () => {
                     <Route exact path="/" component={Landing}/>
                     <Alert/>
                     <Switch>
+                        <Route exact path="/" component={Register}/>
                         <Route exact path="/register" component={Register}/>
                         <Route exact path="/login" component={Login}/>
                         <PrivateRoute exact path="/dashboard" component={Dashboard}/>
-                        <Route exact path="/bookings" component={Bookings}/>
-                        <Route exact path="/room-types" component={RoomTypes}/>
+                        <PrivateRoute exact path="/bookings" component={Bookings}/>
+                        <PrivateRoute exact path="/room-types" component={RoomTypes}/>
+                        <PrivateRoute exact path="/rooms" component={Rooms}/>
                     </Switch>
                 </Fragment>
             </Router>
         </Provider>
     )
-}
+};
 
 export default App;

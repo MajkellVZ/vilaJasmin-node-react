@@ -10,8 +10,28 @@ const Bookings = require('../../models/Bookings');
 // @access Private
 router.get('/', auth, async (req, res) => {
     try {
-        const bookings = await Bookings.find().populate('room');
-        await res.json(bookings);
+        const page = parseInt(req.query.page) || 0;
+        const limit = 10;
+        const bookings = await Bookings.find()
+            .skip(page * limit)
+            .limit(limit)
+            .populate('room_types')
+            .exec((err, doc) => {
+                if (err) {
+                    return res.json(err);
+                }
+                Bookings.countDocuments().exec((count_err, count) => {
+                    if (err) {
+                        return res.json(count_err);
+                    }
+                    return res.json({
+                        total: count,
+                        page: page,
+                        page_size: doc.length,
+                        bookings: doc
+                    })
+                })
+            });
     } catch (e) {
         console.error(e.message);
         res.status(500).send('server error');
@@ -46,7 +66,7 @@ router.post('/', [auth, [
     check('email', 'Email required').not().isEmpty(),
     check('email', 'Invalid Email').isEmail(),
     check('phone', 'Phone required').not().isEmpty(),
-    check('room', 'Room Number required').not().isEmpty(),
+    check('room_types', 'Room Type required').not().isEmpty(),
     // check('check_in', 'Check In Date required').not().isEmpty(),
     // check('check_out', 'Check Out Date required').not().isEmpty(),
 ]], async (req, res) => {
@@ -56,12 +76,12 @@ router.post('/', [auth, [
         return res.status(400).json({errors: errors.array()});
     }
 
-    const {email, phone, room, check_in, check_out} = req.body;
+    const {email, phone, room_types, check_in, check_out} = req.body;
 
     const bookingFields = {};
     bookingFields.email = email;
     bookingFields.phone = phone;
-    bookingFields.room = room;
+    bookingFields.room_types = room_types;
     bookingFields.check_in = check_in;
     bookingFields.check_out = check_out;
 

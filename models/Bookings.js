@@ -9,9 +9,9 @@ const BookingsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    room: {
+    room_types: {
         type: mongoose.Schema.Types.ObjectID,
-        ref: 'rooms'
+        ref: 'room_types'
     },
     check_in: {
         type: Date,

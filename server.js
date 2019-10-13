@@ -7,7 +7,7 @@ const app = express();
 connectDB();
 
 //init Middleware
-app.use(express.json({extended: false}))
+app.use(express.json({extended: false}));
 
 app.get('/', (req, res) => res.send('API Running'));
 
@@ -18,6 +18,7 @@ app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/user', require('./routes/api/user'));
 app.use('/api/bookings', require('./routes/api/bookings'));
 app.use('/api/filter', require('./routes/api/filter'));
+app.use('/api/media', require('./routes/api/media'));
 
 const PORT = process.env.PORT || 5000;
 

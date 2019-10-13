@@ -7,6 +7,8 @@ const Sidebar = () => {
             <Link to={'/bookings'}>Bookings</Link>
             <br/>
             <Link to={'/room-types'}>Room Types</Link>
+            <br/>
+            <Link to={'/rooms'}>Rooms</Link>
         </div>
     )
 };

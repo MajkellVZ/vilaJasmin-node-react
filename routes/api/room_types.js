@@ -10,8 +10,27 @@ const RoomTypes = require('../../models/RoomTypes');
 // @access Private
 router.get('/', auth, async (req, res) => {
     try {
-        const room_types = await RoomTypes.find();
-        await res.json(room_types);
+        const page = parseInt(req.query.page) || 0;
+        const limit = 10;
+        const room_types = await RoomTypes.find()
+            .skip(page * limit)
+            .limit(limit)
+            .exec((err, doc) => {
+                if (err) {
+                    return res.json(err);
+                }
+                RoomTypes.countDocuments().exec((count_err, count) => {
+                    if (err) {
+                        return res.json(count_err);
+                    }
+                    return res.json({
+                        total: count,
+                        page: page,
+                        page_size: doc.length,
+                        room_types: doc
+                    })
+                })
+            });
     } catch (e) {
         console.error(e.message);
         res.status(500).send('server error');
@@ -25,13 +44,13 @@ router.get('/:id', async (req, res) => {
     try {
         const {id} = req.params;
         const room_type = await RoomTypes.findById(id);
-        if (!room_type){
+        if (!room_type) {
             return res.status(400).json({msg: 'Room Type not found.'});
         }
         await res.json(room_type);
     } catch (e) {
         console.error(e.message);
-        if (e.kind === 'ObjectId'){
+        if (e.kind === 'ObjectId') {
             return res.status(400).json({msg: 'Room Type not found.'});
         }
         res.status(500).send('server error');
@@ -53,6 +72,11 @@ router.post('/', [auth, [
     }
 
     const {name, price} = req.body;
+
+    let room_type = await RoomTypes.findOne({name});
+    if (room_type) {
+        return res.status(400).json({errors: [{msg: 'Room Type already exists.'}]});
+    }
 
     const roomTypeFields = {};
     roomTypeFields.name = name;
@@ -93,7 +117,7 @@ router.put('/:id', [auth, [
         //Update
         const {id} = req.params;
         let roomType = await RoomTypes.findById(id);
-        if (roomType){
+        if (roomType) {
             roomType = await RoomTypes.findByIdAndUpdate(
                 {_id: id},
                 {$set: roomTypeFields}
