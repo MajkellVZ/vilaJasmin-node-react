@@ -24,7 +24,12 @@ router.get('/room/occupied/count', async (req, res) => {
     const {room_types, check_in, check_out} = req.body;
 
     //get count of all room of :type with :check_in and :check_out
-    Bookings.countDocuments(({room_types: room_types}, {check_in: {$gte: check_in, $lte: check_out}}, {check_out: {$gte: check_in, $lte: check_out}}), (err, count) => {
+    Bookings.countDocuments(({room_types: room_types}, {
+        check_in: {
+            $gte: check_in,
+            $lte: check_out
+        }
+    }, {check_out: {$gte: check_in, $lte: check_out}}), (err, count) => {
         res.json(count);
     });
 });
@@ -35,11 +40,30 @@ router.get('/room/occupied/count', async (req, res) => {
 router.get('/', auth, async (req, res) => {
     const {filter} = req.query;
 
-    console.log(filter);
+    const page = parseInt(req.query.page) || 0;
+    const limit = 10;
 
     Bookings.find({$or: [{email: {$regex: filter}}, {phone: {$regex: filter}}]})
-        .exec((err, docs) => {
-            res.json(docs);
+        .skip(page * limit)
+        .limit(limit)
+        .populate('room_types')
+        .exec((err, doc) => {
+            if (err) {
+                return res.json(err);
+            }
+            Bookings.countDocuments({$or: [{email: {$regex: filter}}, {phone: {$regex: filter}}]}).exec((count_err, count) => {
+                if (err) {
+                    return res.json(count_err);
+                }
+                // return res.json(docs);
+                return res.json({
+                    total: count,
+                    page: page,
+                    page_size: doc.length,
+                    bookings: doc,
+                    total_pages: Math.ceil(count / limit) - 1
+                })
+            });
         });
 });
 

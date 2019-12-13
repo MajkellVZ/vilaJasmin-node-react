@@ -1,4 +1,4 @@
-import {GET_BOOKINGS, BOOKINGS_ERROR, GET_BOOKING, DELETE_BOOKING} from "../actions/types";
+import {GET_BOOKINGS, BOOKINGS_ERROR, GET_BOOKING, DELETE_BOOKING, FILTER_BY_EMAIL_PHONE} from "../actions/types";
 
 const initialState = {
     booking: null,
@@ -22,6 +22,12 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 booking: payload,
+                loading: false
+            };
+        case FILTER_BY_EMAIL_PHONE:
+            return {
+                ...state,
+                bookings: payload,
                 loading: false
             };
         case BOOKINGS_ERROR:

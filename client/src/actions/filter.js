@@ -1,5 +1,4 @@
 import axios from 'axios';
-import {setAlert} from "./alert";
 
 import {FILTER_BY_EMAIL_PHONE, BOOKINGS_ERROR} from "./types";
 

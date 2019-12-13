@@ -19,7 +19,6 @@ const Bookings = ({getBookings, deleteBooking, filterBookings, bookings}) => {
     const onChange = e => setFormData({...formData, [e.target.name]: e.target.value});
 
     const onFilter = () => {
-        console.log(formData);
         filterBookings(formData);
     };
 
