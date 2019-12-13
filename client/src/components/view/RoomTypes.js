@@ -33,6 +33,13 @@ const RoomTypes = ({getRoomTypes, getRoomType, deleteRoomType, room_types}) => {
         <Spinner/>
     ) : (
         <Fragment>
+            <select name={"room_types"} >
+                <option key={"0"} value={"null"}>Choose Room Type</option>
+                {room_types.room_types.room_types.map(room_type => (
+                        <option value={room_type._id} key={room_type._id}>{room_type.name}</option>
+                    )
+                )}
+            </select>
             <CreateRoomTypes isUpdate={isUpdate}/>
             <input type={'submit'} value={'Add Room Type'} onClick={() => onAddButton()}/>
             {room_types.room_types.room_types.map(room_type => (

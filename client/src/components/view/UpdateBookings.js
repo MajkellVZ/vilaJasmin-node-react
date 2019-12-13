@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import {updateBooking} from "../../actions/bookings";
 
-const UpdateBookings = ({updateBooking, booking, isUpdate}) => {
+const UpdateBookings = ({updateBooking, booking, isUpdate, room_types}) => {
     const initialState = {
         email: '',
         phone: '',
@@ -34,6 +34,14 @@ const UpdateBookings = ({updateBooking, booking, isUpdate}) => {
             <br/>
             <input type={'text'} name={'phone'} value={phone} onChange={e => onChange(e)}/>
             <br/>
+            {/*<select name={"room_types"} onChange={e => onChange(e)}>*/}
+            {/*    <option key={"0"} value={"null"}>Choose Room Type</option>*/}
+            {/*    {room_types.room_types.room_types.map(room_type => (*/}
+            {/*            <option value={room_type._id} key={room_type._id}>{room_type.name}</option>*/}
+            {/*        )*/}
+            {/*    )}*/}
+            {/*</select>*/}
+            {/*<br/>*/}
             <input type={"date"} name={'check_in'} value={check_in} onChange={e => onChange(e)}/>
             <br/>
             <input type={"date"} name={'check_out'} value={check_out} onChange={e => onChange(e)}/>
@@ -48,10 +56,11 @@ UpdateBookings.propTypes = {
     isUpdate: PropTypes.bool.isRequired,
     booking: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
+    room_types: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
-    booking: state.bookings.booking
+    booking: state.bookings.booking,
 });
 
 export default connect(mapStateToProps, {updateBooking})(UpdateBookings)

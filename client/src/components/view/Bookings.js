@@ -38,12 +38,24 @@ const Bookings = ({getBookings, getBooking, deleteBooking, filterBookings, booki
         <input name={'filter'} value={filter} placeholder={'filter...'} onChange={e => onChange(e)} onKeyUp={() => onFilter()}/>
         {bookings.bookings.bookings.map(booking => (
             <div>
-                <span>{booking.email} {booking.phone} {booking.check_in} {booking.check_out}</span>
+                <span>{booking.email} {booking.phone} {booking.room_types.name} {booking.check_in} {booking.check_out}</span>
                 <input type={'submit'} value={'Edit'} onClick={() => onEdit(booking._id)}/>
                 <input type={'submit'} value={'Delete'} onClick={() => onDelete(booking._id)}/>
                 <br/>
             </div>
         ))}
+        {bookings.bookings.total_pages > 0 &&
+        <div>
+            <input type={'submit'} value={'First'} onClick={() => getBookings()}/>
+            {bookings.bookings.page <= 0 ? '' : <input type={'submit'} value={'Previous'}
+                                                 onClick={() => getBookings(bookings.bookings.page - 1)}/>}
+            <input type={'submit'} value={'Current'}/>
+            {bookings.bookings.page >= bookings.bookings.total_pages ? '' :
+                <input type={'submit'} value={'Next'}
+                       onClick={() => getBookings(bookings.bookings.page + 1)}/>}
+            <input type={'submit'} value={'Last'} onClick={() => getBookings(bookings.bookings.total_pages)}/>
+        </div>
+        }
     </Fragment>
 };
 

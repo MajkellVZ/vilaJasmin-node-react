@@ -20,6 +20,7 @@ export default function (state = initialState, action) {
         case GET_OCCUPIED_ROOM_COUNT:
             return {
                 ...state,
+                error: null,
                 occupied_count: payload,
                 loading: false
             };

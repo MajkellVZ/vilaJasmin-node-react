@@ -40,10 +40,8 @@ export const getRoomCount = (type) => async dispatch => {
         }
     };
 
-    console.log(type);
-
     try {
-        const res = await axios.get(`api/room/count?type=${type}`, config);
+        const res = await axios.get(`http://localhost:3000/api/filter/room/count?type=${type}`, config);
 
         dispatch({
             type: GET_ROOM_COUNT_BY_TYPE,
@@ -67,7 +65,7 @@ export const getOccupiedRoomCount = (data) => async dispatch => {
     };
 
     try {
-        const res = await axios.get(`api/room/occupied/count?type=${data.type}&check_in=${data.check_in}&check_out=${data.check_out}`
+        const res = await axios.get(`http://localhost:3000/api/filter/room/occupied/count?type=${data.type}&check_in=${data.check_in}&check_out=${data.check_out}`
             , config);
 
         dispatch({

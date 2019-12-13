@@ -61,7 +61,7 @@ export default function (state = initialState, action) {
                     ...state.bookings,
                     total: state.bookings.total - 1,
                     page_size: state.bookings.total - 1 >= 0 ? state.bookings.page_size - 1 : state.bookings.page_size,
-                    room_types: state.bookings.bookings.filter(booking => booking._id !== payload),
+                    bookings: state.bookings.bookings.filter(booking => booking._id !== payload),
                 },
                 loading: false
             };

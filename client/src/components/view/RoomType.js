@@ -3,16 +3,17 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import {createBooking} from "../../actions/bookings";
 import {getRoomCount, getOccupiedRoomCount} from "../../actions/filter";
+import filters from "../../reducers/filters";
 
-const RoomType = ({createBooking, getRoomCount, getOccupiedRoomCount, match, filters: {count, occupied_count}}) => {
+const RoomType = ({createBooking, getRoomCount, getOccupiedRoomCount, match, filters: {count, occupied_count, error}}) => {
     useEffect(() => {
-        getRoomCount({type: match.params.name});
+        getRoomCount(match.params.name);
     }, [getRoomCount]);
 
     const [formData, setFormData] = useState({
         isChecked: false,
-        check_in: null,
-        check_out: null,
+        check_in: '',
+        check_out: '',
         email: '',
         phone: '',
         room_type: match.params.name
@@ -58,8 +59,8 @@ const RoomType = ({createBooking, getRoomCount, getOccupiedRoomCount, match, fil
                 <input type={"text"} name={"phone"} onChange={e => onChange(e)}/>
                 <br/>
             </div>}
-            <input type={"submit"} value={occupied_count < count ? "Book" : "No Rooms Available"}
-                   disabled={occupied_count >= count} onClick={() => onBook()}/>
+            {error === null && <input type={"submit"} value={occupied_count < count ? "Book" : "No Rooms Available"}
+                   disabled={occupied_count >= count} onClick={() => onBook()}/>}
         </div>}
     </Fragment>
 };

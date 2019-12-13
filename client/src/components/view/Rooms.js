@@ -43,7 +43,6 @@ const Rooms = ({getRooms, deleteRoom, auth, rooms}) => {
                     </div>
                 )
             )}
-
             {rooms.rooms.total_pages > 0 &&
             <div>
                 <input type={'submit'} value={'First'} onClick={() => getRooms()}/>

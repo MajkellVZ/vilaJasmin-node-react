@@ -4,6 +4,7 @@ const auth = require('../../middleware/auth');
 const Bookings = require('../../models/Bookings');
 const Rooms = require('../../models/Rooms');
 const RoomTypes = require('../../models/RoomTypes');
+const {check, validationResult} = require('express-validator/check');
 
 // @route GET api/filter/room/count
 // @desc Filter available rooms
@@ -22,7 +23,16 @@ router.get('/room/count', async (req, res) => {
 // @route GET api/filter/room/occupied/count
 // @desc Filter available rooms
 // @access Public
-router.get('/room/occupied/count', async (req, res) => {
+router.get('/room/occupied/count', [
+    check('check_in', 'Check In Date required').not().isEmpty(),
+    check('check_out', 'Check Out Date required').not().isEmpty()
+], async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
     const {type, check_in, check_out} = req.query;
 
     const room_type = await RoomTypes.findOne({name: type});
