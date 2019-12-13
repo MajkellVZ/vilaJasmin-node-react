@@ -28,7 +28,8 @@ router.get('/', async (req, res) => {
                         total: count,
                         page: page,
                         page_size: doc.length,
-                        rooms: doc
+                        rooms: doc,
+                        total_pages: Math.ceil(count / limit) - 1
                     })
                 })
             });

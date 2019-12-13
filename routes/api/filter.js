@@ -33,9 +33,11 @@ router.get('/room/occupied/count', async (req, res) => {
 // @desc Filter Bookings by Email or Phone
 // @access Private
 router.get('/', auth, async (req, res) => {
-    const {filterTerm} = req.body;
+    const {filter} = req.query;
 
-    Bookings.find({$or: [{email: {$regex: filterTerm}}, {phone: {$regex: filterTerm}}]})
+    console.log(filter);
+
+    Bookings.find({$or: [{email: {$regex: filter}}, {phone: {$regex: filter}}]})
         .exec((err, docs) => {
             res.json(docs);
         });

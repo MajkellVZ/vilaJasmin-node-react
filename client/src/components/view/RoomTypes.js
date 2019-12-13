@@ -1,38 +1,62 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import Sidebar from "../layout/Sidebar";
 import {connect} from "react-redux";
 import {getRoomTypes, deleteRoomType, getRoomType} from "../../actions/room_types";
 import Spinner from "../layout/Spinner";
 import CreateRoomTypes from "./CreateRoomTypes";
 
-const RoomTypes = ({getRoomTypes, deleteRoomType, getRoomType, auth, room_types: {room_types, loading}}) => {
+const RoomTypes = ({getRoomTypes, getRoomType, deleteRoomType, room_types}) => {
     useEffect(() => {
         getRoomTypes();
-    }, []);
+    }, [getRoomTypes]);
 
-    const onSubmit = (id) => {
+    const [formData, setFormData] = useState({
+        isUpdate: false
+    });
+
+    const {isUpdate} = formData;
+
+    const onDelete = (id) => {
         deleteRoomType(id);
     };
 
     const onEdit = (id) => {
         getRoomType(id);
+        setFormData({...formData, isUpdate: true})
     };
 
-    return loading && room_types === null ? <Spinner/> :
+    const onAddButton = () => {
+        setFormData({...formData, isUpdate: false})
+    };
+
+    return room_types.loading ? (
+        <Spinner/>
+    ) : (
         <Fragment>
-            <CreateRoomTypes/>
-            <h1>Room Types</h1>
-            <Sidebar/>
-            {room_types.map(room_type => (
-                <Fragment>
-                    <span>{room_type.name} {room_type.price}</span>
-                    <input type={'submit'} value={'Edit'} onClick={() => onEdit(room_type._id)}/>
-                    <input type={'submit'} value={'Delete'} onClick={() => onSubmit(room_type._id)}/>
-                    <br/>
-                </Fragment>
-            ))}
-        </Fragment>
+            <CreateRoomTypes isUpdate={isUpdate}/>
+            <input type={'submit'} value={'Add Room Type'} onClick={() => onAddButton()}/>
+            {room_types.room_types.room_types.map(room_type => (
+                    <div>
+                        <span>{room_type.name} {room_type.price}</span>
+                        <input type={'submit'} value={'Edit'} onClick={() => onEdit(room_type._id)}/>
+                        <input type={'submit'} value={'Delete'} onClick={() => onDelete(room_type._id)}/>
+                        <br/>
+                    </div>
+                )
+            )}
+            {room_types.room_types.total_pages > 0 &&
+            <div>
+                <input type={'submit'} value={'First'} onClick={() => getRoomTypes()}/>
+                {room_types.room_types.page <= 0 ? '' : <input type={'submit'} value={'Previous'}
+                                                               onClick={() => getRoomTypes(room_types.room_types.page - 1)}/>}
+                <input type={'submit'} value={'Current'}/>
+                {room_types.room_types.page >= room_types.room_types.total_pages ? '' :
+                    <input type={'submit'} value={'Next'}
+                           onClick={() => getRoomTypes(room_types.room_types.page + 1)}/>}
+                <input type={'submit'} value={'Last'} onClick={() => getRoomTypes(room_types.room_types.total_pages)}/>
+            </div>
+            }
+        </Fragment>)
 };
 
 RoomTypes.propTypes = {

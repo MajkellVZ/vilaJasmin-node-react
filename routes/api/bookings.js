@@ -28,7 +28,8 @@ router.get('/', auth, async (req, res) => {
                         total: count,
                         page: page,
                         page_size: doc.length,
-                        bookings: doc
+                        bookings: doc,
+                        total_pages: Math.ceil(count / limit) - 1
                     })
                 })
             });
@@ -45,13 +46,13 @@ router.get('/:id', async (req, res) => {
     try {
         const {id} = req.params;
         const booking = await Bookings.findById(id).populate('room');
-        if (!booking){
+        if (!booking) {
             return res.status(400).json({msg: 'Booking not found.'});
         }
         await res.json(booking);
     } catch (e) {
         console.error(e.message);
-        if (e.kind === 'ObjectId'){
+        if (e.kind === 'ObjectId') {
             return res.status(400).json({msg: 'Booking not found.'});
         }
         res.status(500).send('server error');
@@ -127,7 +128,7 @@ router.put('/:id', [auth, [
         //Update
         const {id} = req.params;
         let booking = await Bookings.findById(id);
-        if (booking){
+        if (booking) {
             booking = await Bookings.findByIdAndUpdate(
                 {_id: id},
                 {$set: bookingFields}

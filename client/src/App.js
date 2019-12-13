@@ -15,6 +15,7 @@ import {Provider} from 'react-redux';
 import store from "./store";
 import setAuthToken from "./utils/setAuthToken";
 import {loadUser} from './actions/auth';
+import Sidebar from "./components/layout/Sidebar";
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -31,6 +32,7 @@ const App = () => {
                 <Fragment>
                     <Navbar/>
                     <Route exact path="/" component={Landing}/>
+                    <Sidebar/>
                     <Alert/>
                     <Switch>
                         <Route exact path="/" component={Register}/>

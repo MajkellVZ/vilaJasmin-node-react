@@ -2,13 +2,13 @@ import axios from 'axios';
 import {setAlert} from "./alert";
 
 import {
-    GET_BOOKINGS, BOOKINGS_ERROR, ROOM_TYPE_ERROR
+    GET_BOOKINGS, BOOKINGS_ERROR, DELETE_BOOKING
 } from "./types";
 
 // Get bookings
-export const getBookings = () => async dispatch => {
+export const getBookings = (page = 0) => async dispatch => {
     try {
-        const res = await axios.get(`/api/bookings/`);
+        const res = await axios.get(`/api/bookings?page=${page}`);
 
         dispatch({
             type: GET_BOOKINGS,
@@ -25,12 +25,12 @@ export const getBookings = () => async dispatch => {
 //Delete Booking
 export const deleteBooking = id => async dispatch => {
     try {
-        const res = await axios.delete(`api/bookings/${id}`);
+        await axios.delete(`api/bookings/${id}`);
 
-        // dispatch({
-        //     type: GET_BOOKINGS,
-        //     payload: res.data
-        // });
+        dispatch({
+            type: DELETE_BOOKING,
+            payload: id
+        });
 
         dispatch(setAlert('Booking Deleted'));
     }  catch (e) {
