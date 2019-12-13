@@ -8,7 +8,8 @@ const UpdateBookings = ({updateBooking, booking, isUpdate, room_types}) => {
         email: '',
         phone: '',
         check_in: '',
-        check_out: ''
+        check_out: '',
+        room_type: ''
     };
 
     useEffect(() => {
@@ -17,7 +18,7 @@ const UpdateBookings = ({updateBooking, booking, isUpdate, room_types}) => {
 
     const [formData, setFormData] = useState(initialState);
 
-    const {email, phone, check_in, check_out} = formData;
+    const {email, phone, check_in, check_out, room_type} = formData;
 
     const onChange = e => {
         setFormData({...formData, [e.target.name]: e.target.value});
@@ -34,14 +35,14 @@ const UpdateBookings = ({updateBooking, booking, isUpdate, room_types}) => {
             <br/>
             <input type={'text'} name={'phone'} value={phone} onChange={e => onChange(e)}/>
             <br/>
-            {/*<select name={"room_types"} onChange={e => onChange(e)}>*/}
-            {/*    <option key={"0"} value={"null"}>Choose Room Type</option>*/}
-            {/*    {room_types.room_types.room_types.map(room_type => (*/}
-            {/*            <option value={room_type._id} key={room_type._id}>{room_type.name}</option>*/}
-            {/*        )*/}
-            {/*    )}*/}
-            {/*</select>*/}
-            {/*<br/>*/}
+            <select name={"room_types"} onChange={e => onChange(e)}>
+                <option key={"0"} value={"null"}>Choose Room Type</option>
+                {room_types.room_types.room_types.map(room_type => (
+                        <option selected={booking && room_type._id === booking.room_types} value={room_type._id} key={room_type._id}>{room_type.name}</option>
+                    )
+                )}
+            </select>
+            <br/>
             <input type={"date"} name={'check_in'} value={check_in} onChange={e => onChange(e)}/>
             <br/>
             <input type={"date"} name={'check_out'} value={check_out} onChange={e => onChange(e)}/>

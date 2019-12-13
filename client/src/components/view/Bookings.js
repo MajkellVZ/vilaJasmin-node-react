@@ -5,9 +5,11 @@ import {getBookings, deleteBooking, getBooking} from "../../actions/bookings";
 import {filterBookings} from "../../actions/filter";
 import Spinner from "../layout/Spinner";
 import UpdateBookings from "./UpdateBookings";
+import {getRoomTypes} from "../../actions/room_types";
 
-const Bookings = ({getBookings, getBooking, deleteBooking, filterBookings, bookings}) => {
+const Bookings = ({getBookings, getBooking, deleteBooking, filterBookings, getRoomTypes, bookings, room_types}) => {
     useEffect(() => {
+        getRoomTypes();
         getBookings();
     }, [getBookings]);
 
@@ -34,7 +36,7 @@ const Bookings = ({getBookings, getBooking, deleteBooking, filterBookings, booki
     };
 
     return bookings.loading ? <Spinner/> : <Fragment>
-        <UpdateBookings isUpdate={isUpdate}/>
+        <UpdateBookings isUpdate={isUpdate} room_types={room_types}/>
         <input name={'filter'} value={filter} placeholder={'filter...'} onChange={e => onChange(e)} onKeyUp={() => onFilter()}/>
         {bookings.bookings.bookings.map(booking => (
             <div>
@@ -65,12 +67,15 @@ Bookings.propTypes = {
     getBooking: PropTypes.func.isRequired,
     bookings: PropTypes.object.isRequired,
     deleteBooking: PropTypes.func.isRequired,
-    filterBookings: PropTypes.func.isRequired
+    filterBookings: PropTypes.func.isRequired,
+    getRoomTypes: PropTypes.func.isRequired,
+    room_types: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
     auth: state.auth,
-    bookings: state.bookings
+    bookings: state.bookings,
+    room_types: state.room_types
 });
 
-export default connect(mapStateToProps, {getBookings, getBooking, deleteBooking, filterBookings})(Bookings);
+export default connect(mapStateToProps, {getBookings, getBooking, deleteBooking, filterBookings, getRoomTypes})(Bookings);

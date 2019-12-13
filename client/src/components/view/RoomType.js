@@ -52,7 +52,7 @@ const RoomType = ({createBooking, getRoomCount, getOccupiedRoomCount, match, fil
         <br/>
         <br/>
         {isChecked && <div>
-            {occupied_count < count &&
+            {error === null && occupied_count < count &&
             <div>
                 <input type={"text"} name={"email"} onChange={e => onChange(e)}/>
                 <br/>

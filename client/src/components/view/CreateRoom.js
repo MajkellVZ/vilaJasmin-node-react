@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {createRoom, getRooms, updateRoom} from "../../actions/rooms";
 
-const CreateRoom = ({getRoomTypes, createRoom, room_types, getRooms, room, isUpdate}) => {
+const CreateRoom = ({createRoom, room_types, getRooms, room, isUpdate}) => {
     useEffect(() => {
         getRooms();
         isUpdate && setFormData({...room});
@@ -33,13 +33,13 @@ const CreateRoom = ({getRoomTypes, createRoom, room_types, getRooms, room, isUpd
             <form onSubmit={isUpdate ? e => onUpdate(e, room._id) : e => onInsert(e)}>
                 <input type={"text"} name={"room_number"} value={room_number} onChange={e => onChange(e)}/>
                 <br/>
-                {/*<select name={"room_types"} onChange={e => onChange(e)}>*/}
-                {/*    <option key={"0"} value={"null"}>Choose Room Type</option>*/}
-                {/*    {room_types.room_types.room_types.map(room_type => (*/}
-                {/*            <option value={room_type._id} key={room_type._id}>{room_type.name}</option>*/}
-                {/*        )*/}
-                {/*    )}*/}
-                {/*</select>*/}
+                <select name={"room_types"} onChange={e => onChange(e)}>
+                    <option key={"0"} value={"null"}>Choose Room Type</option>
+                    {room_types.room_types.room_types.map(room_type => (
+                            <option value={room_type._id} key={room_type._id}>{room_type.name}</option>
+                        )
+                    )}
+                </select>
                 <br/>
                 <input type={"submit"} value={isUpdate ? "Update" : "Add"}/>
             </form>

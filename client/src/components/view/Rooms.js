@@ -1,13 +1,14 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import CreateRoom from "./CreateRoom";
 import PropTypes from 'prop-types';
-import Sidebar from "../layout/Sidebar";
 import {getRooms, deleteRoom, getRoom} from "../../actions/rooms";
 import {connect} from "react-redux";
 import Spinner from "../layout/Spinner";
+import {getRoomTypes} from "../../actions/room_types";
 
-const Rooms = ({getRooms, deleteRoom, auth, rooms}) => {
+const Rooms = ({getRooms, deleteRoom, getRoomTypes, rooms, room_types}) => {
     useEffect(() => {
+        getRoomTypes();
         getRooms();
     }, []);
 
@@ -32,7 +33,7 @@ const Rooms = ({getRooms, deleteRoom, auth, rooms}) => {
 
     return rooms.loading ? <Spinner/> :
         <Fragment>
-            <CreateRoom isUpdate={isUpdate}/>
+            <CreateRoom isUpdate={isUpdate} room_types={room_types}/>
             <input type={'submit'} value={'Add Room'} onClick={() => onAddButton()}/>
             {rooms.rooms.rooms.map(room => (
                     <div>
@@ -60,14 +61,17 @@ const Rooms = ({getRooms, deleteRoom, auth, rooms}) => {
 
 Rooms.propTypes = {
     getRooms: PropTypes.func.isRequired,
+    getRoomTypes: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     rooms: PropTypes.object.isRequired,
-    deleteRoom: PropTypes.func.isRequired
+    deleteRoom: PropTypes.func.isRequired,
+    room_types: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
     auth: state.auth,
     rooms: state.rooms,
+    room_types: state.room_types
 });
 
-export default connect(mapStateToProps, {getRooms, deleteRoom})(Rooms);
+export default connect(mapStateToProps, {getRooms, deleteRoom, getRoomTypes})(Rooms);
