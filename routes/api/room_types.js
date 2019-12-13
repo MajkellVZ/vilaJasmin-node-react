@@ -7,8 +7,8 @@ const RoomTypes = require('../../models/RoomTypes');
 
 // @route GET api/room/types
 // @desc Show all room types
-// @access Private
-router.get('/', auth, async (req, res) => {
+// @access Public
+router.get('/', async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 0;
         const limit = 10;

@@ -1,4 +1,11 @@
-import {GET_BOOKINGS, BOOKINGS_ERROR, GET_BOOKING, DELETE_BOOKING, FILTER_BY_EMAIL_PHONE} from "../actions/types";
+import {
+    GET_BOOKINGS,
+    BOOKINGS_ERROR,
+    GET_BOOKING,
+    DELETE_BOOKING,
+    FILTER_BY_EMAIL_PHONE,
+    UPDATE_BOOKING
+} from "../actions/types";
 
 const initialState = {
     booking: null,
@@ -9,7 +16,6 @@ const initialState = {
 
 export default function (state = initialState, action) {
     const {type, payload} = action;
-
 
     switch (type) {
         case GET_BOOKINGS:
@@ -36,6 +42,18 @@ export default function (state = initialState, action) {
                 error: payload,
                 loading: false
             };
+        case UPDATE_BOOKING:
+            return {
+                ...state,
+                bookings:
+                    {
+                        ...state.bookings,
+                        bookings: state.bookings.bookings.map(booking =>
+                            booking._id === payload._id ? payload : booking
+                        ),
+                    },
+                loading: false
+            };
         case DELETE_BOOKING:
             return {
                 ...state,
@@ -44,7 +62,8 @@ export default function (state = initialState, action) {
                     total: state.bookings.total - 1,
                     page_size: state.bookings.total - 1 >= 0 ? state.bookings.page_size - 1 : state.bookings.page_size,
                     room_types: state.bookings.bookings.filter(booking => booking._id !== payload),
-                }
+                },
+                loading: false
             };
         default:
             return state;

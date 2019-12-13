@@ -10,12 +10,14 @@ import Bookings from "./components/view/Bookings";
 import RoomTypes from "./components/view/RoomTypes";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import Rooms from "./components/view/Rooms";
+import Home from "./components/view/Home";
 //Redux
 import {Provider} from 'react-redux';
 import store from "./store";
 import setAuthToken from "./utils/setAuthToken";
 import {loadUser} from './actions/auth';
-import Sidebar from "./components/layout/Sidebar";
+import RoomType from "./components/view/RoomType";
+
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -31,13 +33,12 @@ const App = () => {
             <Router>
                 <Fragment>
                     <Navbar/>
-                    <Route exact path="/" component={Landing}/>
-                    <Sidebar/>
+                    <Route exact path="/" component={Home}/>
                     <Alert/>
                     <Switch>
-                        <Route exact path="/" component={Register}/>
                         <Route exact path="/register" component={Register}/>
                         <Route exact path="/login" component={Login}/>
+                        <Route exact path="/room-types/:name" component={RoomType}/>
                         <PrivateRoute exact path="/dashboard" component={Dashboard}/>
                         <PrivateRoute exact path="/bookings" component={Bookings}/>
                         <PrivateRoute exact path="/room-types" component={RoomTypes}/>

@@ -4,6 +4,7 @@ const auth = require('../../middleware/auth');
 const {check, validationResult} = require('express-validator/check');
 
 const Bookings = require('../../models/Bookings');
+const RoomTypes = require('../../models/RoomTypes');
 
 // @route GET api/bookings
 // @desc Show all bookings
@@ -63,14 +64,14 @@ router.get('/:id', async (req, res) => {
 // @route POST api/bookings
 // @desc Create booking
 // @access Private
-router.post('/', [auth, [
+router.post('/', [
     check('email', 'Email required').not().isEmpty(),
     check('email', 'Invalid Email').isEmail(),
     check('phone', 'Phone required').not().isEmpty(),
     check('room_types', 'Room Type required').not().isEmpty(),
-    // check('check_in', 'Check In Date required').not().isEmpty(),
-    // check('check_out', 'Check Out Date required').not().isEmpty(),
-]], async (req, res) => {
+    check('check_in', 'Check In Date required').not().isEmpty(),
+    check('check_out', 'Check Out Date required').not().isEmpty(),
+], async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -79,10 +80,12 @@ router.post('/', [auth, [
 
     const {email, phone, room_types, check_in, check_out} = req.body;
 
+    const room_type = await RoomTypes.findOne({name: room_types});
+
     const bookingFields = {};
     bookingFields.email = email;
     bookingFields.phone = phone;
-    bookingFields.room_types = room_types;
+    bookingFields.room_types = room_type._id;
     bookingFields.check_in = check_in;
     bookingFields.check_out = check_out;
 
@@ -105,9 +108,9 @@ router.put('/:id', [auth, [
     check('email', 'Email required').not().isEmpty(),
     check('email', 'Invalid Email').isEmail(),
     check('phone', 'Phone required').not().isEmpty(),
-    check('room', 'Room Number required').not().isEmpty(),
-    // check('check_in', 'Check In Date required').not().isEmpty(),
-    // check('check_out', 'Check Out Date required').not().isEmpty(),
+    check('room_types', 'Room Type required').not().isEmpty(),
+    check('check_in', 'Check In Date required').not().isEmpty(),
+    check('check_out', 'Check Out Date required').not().isEmpty(),
 ]], async (req, res) => {
     const errors = validationResult(req);
 
@@ -115,12 +118,12 @@ router.put('/:id', [auth, [
         return res.status(400).json({errors: errors.array()});
     }
 
-    const {email, phone, room, check_in, check_out} = req.body;
+    const {email, phone, room_types, check_in, check_out} = req.body;
 
     const bookingFields = {};
     bookingFields.email = email;
     bookingFields.phone = phone;
-    bookingFields.room = room;
+    bookingFields.room_types = room_types;
     bookingFields.check_in = check_in;
     bookingFields.check_out = check_out;
 
