@@ -3,18 +3,18 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {createRoom, getRooms, updateRoom} from "../../actions/rooms";
 
-const CreateRoom = ({createRoom, room_types, getRooms, room, isUpdate}) => {
+const CreateRoom = ({createRoom, updateRoom, room_types, getRooms, room, isUpdate}) => {
     useEffect(() => {
         getRooms();
-        isUpdate && setFormData({...room});
-    }, [getRooms]);
+        isUpdate && setFormData({...room, room_types: room.room_types._id});
+    }, [room, getRooms]);
 
     const [formData, setFormData] = useState({
         room_number: '',
         room_types: ''
     });
 
-    const {room_number, room_type} = formData;
+    const {room_number} = formData;
 
     const onChange = e => setFormData({...formData, [e.target.name]: e.target.value});
 
@@ -36,7 +36,7 @@ const CreateRoom = ({createRoom, room_types, getRooms, room, isUpdate}) => {
                 <select name={"room_types"} onChange={e => onChange(e)}>
                     <option key={"0"} value={"null"}>Choose Room Type</option>
                     {room_types.room_types.room_types.map(room_type => (
-                            <option value={room_type._id} key={room_type._id}>{room_type.name}</option>
+                            <option selected={room_type._id === formData.room_types} value={room_type._id} key={room_type._id}>{room_type.name}</option>
                         )
                     )}
                 </select>
@@ -52,6 +52,7 @@ CreateRoom.propTypes = {
     auth: PropTypes.object.isRequired,
     room_types: PropTypes.object.isRequired,
     createRoom: PropTypes.func.isRequired,
+    updateRoom: PropTypes.func.isRequired,
     room: PropTypes.object.isRequired,
     isUpdate: PropTypes.bool.isRequired
 };
@@ -62,4 +63,4 @@ const mapStateToProps = state => ({
     room_types: state.room_types,
 });
 
-export default connect(mapStateToProps, {createRoom, getRooms})(CreateRoom);
+export default connect(mapStateToProps, {createRoom, getRooms, updateRoom})(CreateRoom);

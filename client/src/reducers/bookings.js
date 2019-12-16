@@ -57,7 +57,7 @@ export default function (state = initialState, action) {
         case DELETE_BOOKING:
             return {
                 ...state,
-                booking: {
+                bookings: {
                     ...state.bookings,
                     total: state.bookings.total - 1,
                     page_size: state.bookings.total - 1 >= 0 ? state.bookings.page_size - 1 : state.bookings.page_size,

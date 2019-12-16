@@ -6,7 +6,7 @@ import {connect} from "react-redux";
 import Spinner from "../layout/Spinner";
 import {getRoomTypes} from "../../actions/room_types";
 
-const Rooms = ({getRooms, deleteRoom, getRoomTypes, rooms, room_types}) => {
+const Rooms = ({getRooms, deleteRoom, getRoomTypes, getRoom, rooms, room_types}) => {
     useEffect(() => {
         getRoomTypes();
         getRooms();
@@ -61,6 +61,7 @@ const Rooms = ({getRooms, deleteRoom, getRoomTypes, rooms, room_types}) => {
 
 Rooms.propTypes = {
     getRooms: PropTypes.func.isRequired,
+    getRoom: PropTypes.func.isRequired,
     getRoomTypes: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     rooms: PropTypes.object.isRequired,
@@ -74,4 +75,4 @@ const mapStateToProps = state => ({
     room_types: state.room_types
 });
 
-export default connect(mapStateToProps, {getRooms, deleteRoom, getRoomTypes})(Rooms);
+export default connect(mapStateToProps, {getRooms, deleteRoom, getRoomTypes, getRoom})(Rooms);

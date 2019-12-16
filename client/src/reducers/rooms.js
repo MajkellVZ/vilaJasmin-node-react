@@ -33,7 +33,12 @@ export default function (state = initialState, action) {
         case CREATE_ROOM:
             return {
                 ...state,
-                rooms: [...state.rooms, payload],
+                rooms: {
+                    ...state.rooms,
+                    total: state.rooms.total + 1,
+                    page_size: state.rooms.total + 1 <= 10 ? state.rooms.page_size + 1 : state.rooms.page_size,
+                    rooms: [...state.rooms.rooms, payload]
+                },
                 loading: false
             };
         case UPDATE_ROOM:

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {setAlert} from "./alert";
-import {CREATE_ROOM, DELETE_ROOM, GET_ROOM, GET_ROOMS, ROOM_TYPE_ERROR, ROOMS_ERROR} from "./types";
+import {CREATE_ROOM, DELETE_ROOM, GET_ROOM, GET_ROOMS, ROOM_TYPE_ERROR, ROOMS_ERROR, UPDATE_ROOM} from "./types";
 
 //Get rooms
 export const getRooms = (page = 0) => async dispatch => {
@@ -22,7 +22,7 @@ export const getRooms = (page = 0) => async dispatch => {
 // Get room
 export const getRoom = (id) => async dispatch => {
     try {
-        const res = await axios.get(`/api/room/${id}`);
+        const res = await axios.get(`/api/rooms/${id}`);
 
         dispatch({
             type: GET_ROOM,
@@ -71,14 +71,14 @@ export const updateRoom = (formData, id) => async dispatch => {
             }
         };
 
-        const res = await axios.post(`/api/rooms/${id}`, formData, config);
+        await axios.put(`/api/rooms/${id}`, formData, config);
 
         dispatch({
-            type: CREATE_ROOM,
+            type: UPDATE_ROOM,
             payload: formData
         });
 
-        dispatch(setAlert('Room Created'));
+        dispatch(setAlert('Room Updated'));
     } catch (e) {
         const errors = e.response.data.errors;
 
