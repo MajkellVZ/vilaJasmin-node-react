@@ -2,6 +2,22 @@ import axios from 'axios';
 import {setAlert} from "./alert";
 import {GET_MEDIA, CREATE_MEDIA, MEDIA_ERROR, DELETE_MEDIA} from "./types";
 
+export const getAllMedia = () => async dispatch => {
+    try {
+        const res = await axios.get(`http://localhost:3000/api/media`);
+
+        dispatch({
+            type: GET_MEDIA,
+            payload: res.data
+        })
+    } catch (e) {
+        dispatch({
+            type: MEDIA_ERROR,
+            payload: {msg: e.response.statusText, status: e.response.status}
+        })
+    }
+};
+
 export const getMedia = (room_type) => async dispatch => {
     try {
         const res = await axios.get(`http://localhost:3000/api/media/${room_type}`);

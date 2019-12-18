@@ -33,6 +33,22 @@ const upload = multer({
 const Image = require('../../models/Image');
 const RoomType = require('../../models/RoomTypes');
 
+// @route GET api/media/
+// @desc Get all media
+// @access Public
+router.get('/', upload.single('room_image'), async (req, res) => {
+    try {
+        const media = await Image.find();
+        if (!media) {
+            return res.status(400).json({msg: 'Media not found'});
+        }
+        await res.json(media);
+    } catch (e) {
+        console.log(e.message);
+        res.status(500).send('server error');
+    }
+});
+
 // @route GET api/media/:room_type
 // @desc Get media by room type
 // @access Public
