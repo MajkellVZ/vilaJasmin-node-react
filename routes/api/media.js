@@ -5,10 +5,10 @@ const {check, validationResult} = require('express-validator/check');
 const multer = require('multer');
 
 const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
+    destination: function (req, file, cb) {
         cb(null, './uploads/');
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         cb(null, file.originalname);
     }
 });
@@ -30,15 +30,18 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
-const Media = require('../../models/Media');
+const Image = require('../../models/Image');
+const RoomType = require('../../models/RoomTypes');
 
-// @route GET api/media/:id
-// @desc Read media
+// @route GET api/media/:room_type
+// @desc Get media by room type
 // @access Public
-router.get('/:id', upload.single('room_image'), async (req, res) => {
+router.get('/:room_type', upload.single('room_image'), async (req, res) => {
     try {
-        const {id} = req.params;
-        const media = await Media.find({rooms: id});
+        const {room_type} = req.params;
+        let room_types = await RoomType.findOne({name: room_type});
+
+        const media = await Image.find({room_types: room_types._id});
         if (!media) {
             return res.status(400).json({msg: 'Media not found'});
         }
@@ -49,40 +52,64 @@ router.get('/:id', upload.single('room_image'), async (req, res) => {
     }
 });
 
-// @route POST api/media
-// @desc Upload media
-// @access Private
-router.post('/', upload.single('room_image'), async (req, res) => {
-
-    const image_path = req.file.originalname;
-    const {rooms} = req.body;
-
-    let media = await Media.find({image_path});
-    if (media) {
-        return res.status(400).json({errors: {msg: 'Image already exists'}});
-    }
-
-    const mediaFields = {};
-    mediaFields.image_path = image_path;
-    mediaFields.rooms = rooms;
-
+// @route GET api/media/display/:image_path
+// @desc Get media by path
+// @access Public
+router.get('/display/:image_path', upload.single('room_image'), async (req, res) => {
     try {
-        let media = new Media(mediaFields);
-        await media.save();
-        await res.json(media);
+        const {image_path} = req.params;
+        const media = await Image.find({image_path: image_path});
+        if (!media) {
+            return res.status(400).json({msg: 'Media not found'});
+        }
+        await res.sendFile(`/home/majkellvz/devconnector/uploads/${image_path}`);
     } catch (e) {
         console.log(e.message);
         res.status(500).send('server error');
     }
 });
 
+// @route POST api/media/:room_type
+// @desc Upload media
+// @access Private
+router.post('/:room_type', auth, upload.array('room_image', 100), async (req, res) => {
+        const files = req.files;
+        if (!files) return res.status(400).json({errors: {msg: 'File missing'}});
+
+        const {room_type} = req.params;
+        let room_types = await RoomType.findOne({name: room_type});
+
+        var response = [];
+
+        for (var file of files) {
+
+            var mediaFields = {};
+            mediaFields.image_path = file.originalname;
+            mediaFields.room_types = room_types._id;
+
+            try {
+                let media = new Image(mediaFields);
+                await media.save();
+                response.push(media);
+            } catch (e) {
+                console.log(e.message);
+                response.push(e.message);
+            }
+
+            console.log(file.originalname);
+        }
+
+        await res.json(response);
+    }
+);
+
 // @route DELETE api/media/:id
 // @desc Delete media
 // @access Private
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     try {
         const {id} = req.params;
-        await Media.findByIdAndRemove(id);
+        await Image.findByIdAndRemove(id);
         await res.json({msg: 'Media Deleted'});
     } catch (e) {
         console.log(e.message);

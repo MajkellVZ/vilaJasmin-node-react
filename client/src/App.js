@@ -17,6 +17,7 @@ import store from "./store";
 import setAuthToken from "./utils/setAuthToken";
 import {loadUser} from './actions/auth';
 import RoomType from "./components/view/RoomType";
+import Media from "./components/media/Media";
 
 
 if (localStorage.token) {
@@ -43,6 +44,7 @@ const App = () => {
                         <PrivateRoute exact path="/bookings" component={Bookings}/>
                         <PrivateRoute exact path="/room-types" component={RoomTypes}/>
                         <PrivateRoute exact path="/rooms" component={Rooms}/>
+                        <PrivateRoute exact path="/media/:name" component={Media}/>
                     </Switch>
                 </Fragment>
             </Router>

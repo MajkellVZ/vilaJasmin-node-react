@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import {getRoomTypes, deleteRoomType, getRoomType} from "../../actions/room_types";
 import Spinner from "../layout/Spinner";
 import CreateRoomTypes from "./CreateRoomTypes";
+import {Link} from "react-router-dom";
 
 const RoomTypes = ({getRoomTypes, getRoomType, deleteRoomType, room_types}) => {
     useEffect(() => {
@@ -40,6 +41,7 @@ const RoomTypes = ({getRoomTypes, getRoomType, deleteRoomType, room_types}) => {
                         <span>{room_type.name} {room_type.price}</span>
                         <input type={'submit'} value={'Edit'} onClick={() => onEdit(room_type._id)}/>
                         <input type={'submit'} value={'Delete'} onClick={() => onDelete(room_type._id)}/>
+                        <Link to={`/media/${room_type.name}`}>Manage Media</Link>
                         <br/>
                     </div>
                 )

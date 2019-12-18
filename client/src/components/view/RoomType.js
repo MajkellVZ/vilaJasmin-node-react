@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import {createBooking} from "../../actions/bookings";
 import {getRoomCount, getOccupiedRoomCount} from "../../actions/filter";
-import filters from "../../reducers/filters";
+import {getMedia} from "../../actions/media";
 
-const RoomType = ({createBooking, getRoomCount, getOccupiedRoomCount, match, filters: {count, occupied_count, error}}) => {
+const RoomType = ({getMedia, createBooking, getRoomCount, getOccupiedRoomCount, match, media, filters: {count, occupied_count, error}}) => {
     useEffect(() => {
+        getMedia(match.params.name);
         getRoomCount(match.params.name);
     }, [getRoomCount]);
 
@@ -46,6 +47,11 @@ const RoomType = ({createBooking, getRoomCount, getOccupiedRoomCount, match, fil
     };
 
     return <Fragment>
+        {media.media.map(img => (
+            <div>
+                <img alt={match.params.name} src={`http://localhost:5000/api/media/display/${img.image_path}`}/>
+            </div>
+        ))}
         <input type={"date"} name={"check_in"} onChange={e => onChange(e)}/>
         <input type={"date"} name={"check_out"} onChange={e => onChange(e)}/>
         <input type={"submit"} value={"Check Availability"} onClick={() => onCheckAvailability()}/>
@@ -70,12 +76,15 @@ RoomType.propTypes = {
     createBooking: PropTypes.func.isRequired,
     getRoomCount: PropTypes.func.isRequired,
     getOccupiedRoomCount: PropTypes.func.isRequired,
+    getMedia: PropTypes.func.isRequired,
     count: PropTypes.object.isRequired,
     occupied_count: PropTypes.object.isRequired,
+    media: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
     filters: state.filters,
+    media: state.media
 });
 
-export default connect(mapStateToProps, {createBooking, getRoomCount, getOccupiedRoomCount})(RoomType);
+export default connect(mapStateToProps, {getMedia, createBooking, getRoomCount, getOccupiedRoomCount})(RoomType);

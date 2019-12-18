@@ -37,7 +37,7 @@ const Rooms = ({getRooms, deleteRoom, getRoomTypes, getRoom, rooms, room_types})
             <input type={'submit'} value={'Add Room'} onClick={() => onAddButton()}/>
             {rooms.rooms.rooms.map(room => (
                     <div>
-                        <span>{room.room_number} {room.price}</span>
+                        <span>{room.room_number} {room.room_types.price}</span>
                         <input type={'submit'} value={'Edit'} onClick={() => onEdit(room._id)}/>
                         <input type={'submit'} value={'Delete'} onClick={() => onDelete(room._id)}/>
                         <br/>

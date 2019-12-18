@@ -100,7 +100,8 @@ router.post('/', [auth, [
 // @desc Update Room
 // @access Private
 router.put('/:id', [auth, [
-    check('room_number', 'Room Number required').not().isEmpty()
+    check('room_number', 'Room Number required').not().isEmpty(),
+    check('room_types', 'Room Type required').not().isEmpty()
 ]], async (req, res) => {
     const errors = validationResult(req);
 
@@ -108,10 +109,11 @@ router.put('/:id', [auth, [
         return res.status(400).json({errors: errors.array()});
     }
 
-    const {room_number} = req.body;
+    const {room_number, room_types} = req.body;
 
     const roomFields = {};
     roomFields.room_number = room_number;
+    roomFields.room_types = room_types;
 
     try {
         //Update
